@@ -1,44 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>fabric.js test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+      canvas {
+        border: solid 3px #000;
+      }
+    </style>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js"></script>
+    <script type="text/javascript">
 
-    <title>Hello Phoenix!</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    window.onload = function(){
+
+      var canvas = this.__canvas = new fabric.Canvas('test_canvas');
+      fabric.Object.prototype.transparentCorners = false;
+
+      // var canvas = new fabric.Canvas('test_canvas');
+      // fabric.Object.prototype.transparentCorners = false;
+      var mouse_start_pos = { x:0 , y:0 };
+      var mouse_end_pos = { x:0 , y:0 };
+      var width = 120;
+      var height = 80;
+      var on_flag = 0;
+
+
+        canvas.on('mouse:over', function(e) {
+          on_flag = 1;
+          e.target.setFill('red');
+          // e.target.hasControls = true;
+          // canvas.set('selectable', true);
+          canvas.renderAll();
+        });
+
+
+        canvas.on('mouse:out', function(e) {
+          on_flag = 0;
+          e.target.setFill('green');
+          // e.target.hasControls = false;
+          // canvas.set('selectable', false);
+          canvas.renderAll();
+        });
+
+
+
+
+      canvas.on('mouse:down', function(e) {
+        if(on_flag == 0){
+         mouse_start_pos = canvas.getPointer(e.e);
+         canvas.add(new fabric.Rect({
+             left: mouse_start_pos.x - width / 2,
+             top: mouse_start_pos.y - height /2,
+             width: width,
+             height: height,
+             fill: 'aqua',
+             stroke: 'blue',
+             strokeWidth: 0
+         }));
+         on_flag = 1;
+       }
+      });
+    }
+
+    </script>
   </head>
 
   <body>
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Phoenix Chat</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav pull-right">
-            <li><a href="http://github.com/chrismccord/phoenix_chat_example">source</a></li>
-            <li><a href="http://www.phoenixframework.org/">Learn more about the Phoenix Framework</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+    <p>テスト</p>
+    <canvas id="test_canvas" width="1200" height="800"></canvas>
 
-    <!-- Begin page content -->
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
-
-    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  <!-- SCRIPTS -->
+  <!-- Example: <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
   </body>
 </html>
